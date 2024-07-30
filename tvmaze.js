@@ -7,14 +7,14 @@ const $episodesList = $("#episodesList");
 
 const ROOT_API_URL = 'https://api.tvmaze.com/'
 
-
-/** Given a search term, search for tv shows that match that query.
- *
- *  Returns (promise) array of show objects: [show, show, ...].
+/**
+ * Given a search term, search for tv shows that match that query.
+ * 
+ * @param {String} term - target search term  
+ * @returns Returns (promise) array of show objects: [show, show, ...].
  *    Each show object should contain exactly: {id, name, summary, image}
  *    (if no image URL given by API, put in a default image URL)
  */
-
 async function getShowsByTerm(term) {
   try {
     const response = await axios({
@@ -54,8 +54,12 @@ async function getShowsByTerm(term) {
 }
 
 
-/** Given list of shows, create markup for each and to DOM */
-
+/**
+ * Given list of shows, create markup for each and to DOM
+ *  using jQuery 
+ * 
+ * @param {*} shows 
+ */
 function populateShows(shows) {
   $showsList.empty();
 
@@ -101,14 +105,64 @@ $searchForm.on("submit", async function (evt) {
 });
 
 
-/** Given a show ID, get from API and return (promise) array of episodes:
+/**
+ * Given a show ID, get data from the API about episodes
+ * 
+ * @param {number} id - the id for the show
+ * @returns array of episodes:
  *      { id, name, season, number }
  */
-
 async function getEpisodesOfShow(id) {
+  const response = await axios({
+    baseURL: ROOT_API_URL,
+    url: `shows/${id}/episodes`,
+    method: 'get',
+  });
+
+  console.log(response.data);
+
+  // Returns the newly created array populated with the results 
+  //  of calling a function on every element in the data array 
+  //  to extract the id, name, summary, and image
+  let printme = response.data.map(function (episode) {
+    return {
+      id: episode.id,
+      name: episode.name,
+      season: episode.season,
+      number: episode.number
+    }
+  });
+
+  // delet printme and just return above. 
+  console.log(printme);
+
+
+  return printme;
+}
+
+/**
+ * 
+ * @param {Array} episodes - list of a show's episodes { id, name, season, number} 
+ */
+function populateEpisodes(episodes) {
+  $episodesList.empty();
+
+  for (let episode of episodes) {
+    const $item = $(`<li>${episode.number}. ${episode.name} from season ${episode.season}</li>`);
+    $episodesList.append($item);
+  }
+  $episodesArea.show();
+}
+
+async function searchForEpisodeAndDisplay(e) {
+  const targetShowId = $(e.target).closest(".Show").data('show-id');
+
+  const allEpisodes = await getEpisodesOfShow(targetShowId);
+
+  populateEpisodes(allEpisodes);
 
 }
 
-/** Write a clear docstring for this function... */
+//Event Listener
+$showsList.on("click", ".Show-getEpisodes", searchForEpisodeAndDisplay);
 
-// function populateEpisodes(episodes) { }
