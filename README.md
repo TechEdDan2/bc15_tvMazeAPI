@@ -32,8 +32,8 @@ Users should be able to:
 
 ### Links
 
-- Solution URL: https://github.com/TechEdDan2/bc12_FruitSearch
-- Live Site URL: https://techeddan2.github.io/bc12_FruitSearch/
+- Solution URL: https://github.com/TechEdDan2/bc15_tvMazeAPI
+- Live Site URL: N/A
 
 ## My process
 
