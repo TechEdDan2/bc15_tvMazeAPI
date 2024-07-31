@@ -26,12 +26,10 @@ async function getShowsByTerm(term) {
       },
     });
 
-    console.log(response.data);
-
     // Returns the newly created array populated with the results 
     //  of calling a function on every element in the data array 
     //  to extract the id, name, summary, and image
-    let printme = response.data.map(function (item) {
+    return response.data.map(function (item) {
       const showInfo = item.show;
       return {
         id: showInfo.id,
@@ -40,12 +38,6 @@ async function getShowsByTerm(term) {
         image: showInfo.image.original
       }
     });
-
-    // delet printme and just return above. 
-    console.log(printme);
-
-
-    return printme;
 
   } catch (err) {
     alert(`Something went wrong looking for ${term}`);
@@ -58,7 +50,7 @@ async function getShowsByTerm(term) {
  * Given list of shows, create markup for each and to DOM
  *  using jQuery 
  * 
- * @param {*} shows 
+ * @param {Array} shows 
  */
 function populateShows(shows) {
   $showsList.empty();
@@ -87,10 +79,10 @@ function populateShows(shows) {
 }
 
 
-/** Handle search form submission: get shows from API and display.
+/** 
+ * Handle search form submission: get shows from API and display.
  *    Hide episodes area (that only gets shown if they ask for episodes)
  */
-
 async function searchForShowAndDisplay() {
   const term = $("#searchForm-term").val();
   const shows = await getShowsByTerm(term);
@@ -119,12 +111,10 @@ async function getEpisodesOfShow(id) {
     method: 'get',
   });
 
-  console.log(response.data);
-
   // Returns the newly created array populated with the results 
   //  of calling a function on every element in the data array 
   //  to extract the id, name, summary, and image
-  let printme = response.data.map(function (episode) {
+  return response.data.map(function (episode) {
     return {
       id: episode.id,
       name: episode.name,
@@ -133,14 +123,10 @@ async function getEpisodesOfShow(id) {
     }
   });
 
-  // delet printme and just return above. 
-  console.log(printme);
-
-
-  return printme;
 }
 
 /**
+ * 
  * 
  * @param {Array} episodes - list of a show's episodes { id, name, season, number} 
  */
@@ -154,6 +140,12 @@ function populateEpisodes(episodes) {
   $episodesArea.show();
 }
 
+/**
+ * Handle search to get show episodes from API and display.
+ *  Show episodes area 
+ * 
+ * @param {Event} e 
+ */
 async function searchForEpisodeAndDisplay(e) {
   const targetShowId = $(e.target).closest(".Show").data('show-id');
 
@@ -163,6 +155,6 @@ async function searchForEpisodeAndDisplay(e) {
 
 }
 
-//Event Listener
+//Event Listener waiting for a click on the Episodes button element
 $showsList.on("click", ".Show-getEpisodes", searchForEpisodeAndDisplay);
 
